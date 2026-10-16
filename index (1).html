@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Khám phá nguyên tố Coban (Co): ứng dụng, mô hình nguyên tử 3D, thí nghiệm và câu hỏi tương tác.">
+  <title>Khám phá nguyên tố Coban (Co)</title>
+  <style>
+    :root{--bg:#08111f;--panel:#111f32;--panel2:#172941;--text:#edf5ff;--muted:#a8bbd2;--accent:#79aaff;--cyan:#5de1e6;--line:#2b405b;--good:#65dfa4}
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;background:radial-gradient(ellipse at 80% 0%,#1b3550 0,transparent 38%),var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    a{color:var(--cyan)} button{font:inherit;cursor:pointer}
+    .wrap{width:min(1120px,92%);margin:auto}
+    header{padding:48px 0 30px}
+    .eyebrow{color:var(--cyan);text-transform:uppercase;letter-spacing:.16em;font-size:.78rem;font-weight:800}
+    h1{font-size:clamp(2.3rem,6vw,4.8rem);line-height:1.02;margin:.45rem 0 1rem;letter-spacing:-.04em}
+    h1 span{color:var(--accent)} .lead{max-width:720px;color:var(--muted);font-size:1.1rem}
+    .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:stretch}
+    .panel,.element-card{background:linear-gradient(145deg,rgba(23,41,65,.95),rgba(13,26,43,.96));border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 18px 45px #0002}
+    .element-card{display:flex;flex-direction:column;justify-content:space-between;min-height:280px;background:linear-gradient(145deg,#245fa8,#202744 75%)}
+    .atomic-number{font-size:.95rem;opacity:.9}.symbol{font-size:7rem;font-weight:850;line-height:1;letter-spacing:-.07em}.el-name{font-size:1.5rem;font-weight:750}.el-mass{opacity:.85}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+    .stat{background:#07132255;border:1px solid #ffffff22;border-radius:12px;padding:12px}.stat b{display:block;font-size:1.15rem}.stat small{color:#f4d8c7}
+    nav{position:sticky;top:0;z-index:10;background:#08111fe8;backdrop-filter:blur(12px);border-block:1px solid var(--line)}
+    nav .wrap{display:flex;gap:8px;overflow:auto;padding:10px 0}nav a{white-space:nowrap;text-decoration:none;color:var(--muted);padding:7px 12px;border-radius:9px;font-size:.9rem}nav a:hover{background:var(--panel2);color:white}
+    section{padding:34px 0;scroll-margin-top:76px}h2{font-size:clamp(1.6rem,3vw,2.3rem);line-height:1.15;margin:0 0 8px}h3{margin:.2rem 0 .5rem}.sub{color:var(--muted);margin:0 0 22px}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:20px}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .pill{display:inline-block;background:#203a55;color:#b9f5f3;border-radius:999px;padding:4px 10px;font-size:.78rem;font-weight:750}
+    .timeline{display:grid;gap:12px}.beat{display:grid;grid-template-columns:82px 1fr;gap:12px;padding:13px;border-bottom:1px solid var(--line)}.beat time{color:var(--accent);font-weight:800}
+    .video-screen{aspect-ratio:16/9;background:linear-gradient(135deg,#1c344d,#111b2a);border:1px solid var(--line);border-radius:16px;display:grid;place-items:center;text-align:center;padding:22px;position:relative;overflow:hidden}
+    .video-screen:before{content:"Co";position:absolute;font-size:15rem;font-weight:900;color:#ffffff08;right:-10px;bottom:-90px}
+    .play{width:64px;height:64px;border-radius:50%;border:0;background:var(--accent);color:#1c1820;font-size:1.5rem;font-weight:900;margin-bottom:12px}.video-screen h3{font-size:1.5rem}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.btn{border:1px solid var(--line);background:#1b3049;color:var(--text);padding:10px 15px;border-radius:11px}.btn.primary{background:var(--accent);border-color:var(--accent);color:#20130d;font-weight:800}.btn:focus-visible,a:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+    .progress{height:7px;background:#26384d;border-radius:99px;overflow:hidden;margin:15px 0}.progress span{display:block;height:100%;width:0;background:var(--cyan);transition:width .3s}
+    .fact{border-left:3px solid var(--cyan);padding:10px 14px;background:#0a1727;border-radius:0 10px 10px 0;color:var(--muted)}
+    .canvas-wrap{background:#08101d;border:1px solid var(--line);border-radius:16px;overflow:hidden;min-height:340px;position:relative}
+    canvas{display:block;width:100%;height:340px}.canvas-hint{font-size:.83rem;color:var(--muted);padding:0 14px 12px}
+    .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.86rem;color:var(--muted);margin-top:10px}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+    .app-card{padding:18px;border-radius:16px;background:var(--panel2);border:1px solid var(--line)}.app-card p{color:var(--muted);margin-bottom:0}
+    .safety{border:1px solid #7c6333;background:#332a1b;color:#ffe2a5;padding:14px 16px;border-radius:13px}
+    .quiz-q{padding:18px;background:var(--panel2);border:1px solid var(--line);border-radius:15px;margin:12px 0}.quiz-q p{font-weight:750;margin-top:0}
+    .option{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border:1px solid var(--line);border-radius:10px;margin:8px 0;cursor:pointer}.option:hover{border-color:var(--cyan)}.option input{margin-top:6px;accent-color:var(--cyan)}
+    .feedback{margin-top:10px;font-weight:700}.feedback.good{color:var(--good)}.feedback.bad{color:#ffb08d}
+    footer{border-top:1px solid var(--line);padding:28px 0 45px;color:var(--muted);font-size:.9rem}
+    @media(max-width:760px){.hero-grid,.two{grid-template-columns:1fr}.three{grid-template-columns:1fr}.element-card{min-height:240px}.symbol{font-size:5.5rem}.stats{grid-template-columns:repeat(3,1fr)}.panel{padding:18px}.beat{grid-template-columns:65px 1fr}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+  </style>
+</head>
+<body>
+<header class="wrap">
+  <div class="eyebrow">Hồ sơ nguyên tố · Hóa học tương tác</div>
+  <div class="hero-grid">
+    <div>
+      <h1>Khám phá <span>Coban</span></h1>
+      <p class="lead">Một kim loại màu xanh bạc góp mặt trong nam châm mạnh, hợp kim chịu nhiệt và pin sạc. Coban cũng là thành phần thiết yếu của vitamin B12. Cùng khám phá Co qua video dạng trình chiếu, mô hình nguyên tử 3D và câu hỏi thử thách.</p>
+      <div class="stats">
+        <div class="stat"><b>27</b><small>Số hiệu nguyên tử</small></div>
+        <div class="stat"><b>58,933</b><small>Nguyên tử khối tương đối</small></div>
+        <div class="stat"><b>Co</b><small>Ký hiệu hóa học</small></div>
+      </div>
+    </div>
+    <div class="element-card" aria-label="Thẻ nguyên tố Coban">
+      <div class="atomic-number">27 · Nhóm 9 · Chu kỳ 4</div>
+      <div><div class="symbol">Co</div><div class="el-name">Coban</div><div class="el-mass">Kim loại chuyển tiếp</div></div>
+      <div><span class="pill">Rắn ở nhiệt độ phòng</span> <span class="pill">Có từ tính</span></div>
+    </div>
+  </div>
+</header>
+<nav><div class="wrap">
+  <a href="#video">Video 60–90 giây</a><a href="#ung-dung">Ứng dụng</a><a href="#nguyen-tu">Nguyên tử 3D</a><a href="#thi-nghiem">Thí nghiệm</a><a href="#quiz">Thử thách</a>
+</div></nav>
+<main class="wrap">
+  <section id="video">
+    <span class="pill">01 · Video học nhanh</span>
+    <h2>Co trong 75 giây</h2>
+    <p class="sub">Đây là video trình chiếu tự chạy bằng HTML, có lời dẫn và mốc thời gian. Không cần tải video bên ngoài.</p>
+    <div class="two">
+      <div>
+        <div class="video-screen" aria-live="polite">
+          <div>
+            <button class="play" id="playBtn" aria-label="Phát hoặc tạm dừng video">▶</button>
+            <h3 id="sceneTitle">Xin chào, đây là nguyên tố Coban!</h3>
+            <p id="sceneText">Ký hiệu Co, số hiệu nguyên tử 27. Coban thuộc nhóm kim loại chuyển tiếp ở chu kỳ 4.</p>
+            <span class="pill" id="sceneTime">Cảnh 1 / 6 · 00:00</span>
+          </div>
+        </div>
+        <div class="progress" aria-label="Tiến độ video"><span id="progressBar"></span></div>
+        <div class="controls">
+          <button class="btn primary" id="restartBtn">↺ Xem lại</button>
+          <button class="btn" id="nextBtn">Cảnh tiếp theo →</button>
+        </div>
+        <p class="fact" id="caption">Lời dẫn: “Hãy cùng khám phá kim loại đã góp phần định hình thế giới hiện đại.”</p>
+      </div>
+      <div class="panel">
+        <h3>Kịch bản video</h3>
+        <div class="timeline" id="timeline">
+          <div class="beat"><time>00–12s</time><div><b>Nhận diện Co</b><br><span class="sub">Số hiệu 27, nhóm 9, chu kỳ 4.</span></div></div>
+          <div class="beat"><time>12–25s</time><div><b>Cấu tạo nguyên tử</b><br><span class="sub">27 proton; Co-59 có 32 neutron và là đồng vị bền tự nhiên.</span></div></div>
+          <div class="beat"><time>25–38s</time><div><b>Tính chất</b><br><span class="sub">Kim loại xanh bạc, cứng, có tính sắt từ.</span></div></div>
+          <div class="beat"><time>38–51s</time><div><b>Sức mạnh công nghiệp</b><br><span class="sub">Coban có trong siêu hợp kim chịu nhiệt, dụng cụ cắt và một số pin sạc.</span></div></div>
+          <div class="beat"><time>51–64s</time><div><b>Vai trò sinh học & y tế</b><br><span class="sub">Coban là thành phần của vitamin B12; Co-60 được kiểm soát để xạ trị.</span></div></div>
+          <div class="beat"><time>64–75s</time><div><b>Khép lại</b><br><span class="sub">Coban rất hữu ích, nhưng bụi và hợp chất coban cần được xử lý an toàn.</span></div></div>
+        </div>
+        <p class="sub" style="margin:12px 0 0">Mẹo: nhấn “Cảnh tiếp theo” để điều khiển thủ công. Trình chiếu tự chuyển cảnh khi đang phát.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="ung-dung">
+    <span class="pill">02 · Từ cơ thể đến nhà máy</span>
+    <h2>Tác dụng y tế & công nghiệp</h2>
+    <p class="sub">Coban (Co) có vai trò sinh học ở lượng vi lượng thông qua vitamin B12; trong kỹ thuật, coban được dùng trong hợp kim chịu nhiệt, nam châm, pin sạc và một số ứng dụng y tế chuyên biệt.</p>
+    <div class="three">
+      <article class="app-card"><span class="pill">Y tế · Sinh học</span><h3>Vitamin B12</h3><p>Coban là thành phần cấu trúc của vitamin B12, vitamin cần thiết cho quá trình tạo tế bào máu và hoạt động bình thường của hệ thần kinh. Điều này không có nghĩa là nên tự bổ sung coban kim loại.</p></article>
+      <article class="app-card"><span class="pill">Y tế · Xạ trị</span><h3>Đồng vị Co-60</h3><p>Coban-60 phát ra tia gamma và được sử dụng trong một số thiết bị xạ trị ung thư, khử khuẩn thiết bị y tế. Nguồn phóng xạ chỉ được quản lý bởi chuyên gia được cấp phép.</p></article>
+      <article class="app-card"><span class="pill">Công nghiệp</span><h3>Siêu hợp kim chịu nhiệt</h3><p>Hợp kim chứa coban được dùng ở các chi tiết làm việc trong điều kiện nhiệt độ cao, chẳng hạn một số bộ phận tua-bin khí.</p></article>
+      <article class="app-card"><span class="pill">Năng lượng</span><h3>Pin sạc</h3><p>Một số loại pin lithium-ion dùng hợp chất chứa coban ở vật liệu cathode. Nhu cầu sử dụng và thành phần cụ thể phụ thuộc thiết kế pin.</p></article>
+      <article class="app-card"><span class="pill">Vật liệu</span><h3>Màu xanh coban</h3><p>Một số hợp chất coban tạo sắc xanh bền, được sử dụng làm chất màu cho thủy tinh, men gốm và đồ gốm.</p></article>
+      <article class="app-card"><span class="pill">Đời sống</span><h3>Nam châm mạnh</h3><p>Coban và các hợp kim của nó có thể tạo vật liệu từ tính dùng trong nam châm, thiết bị điện và một số ứng dụng công nghiệp chuyên dụng.</p></article>
+    </div>
+  </section>
+
+  <section id="nguyen-tu">
+    <span class="pill">03 · Mô hình tương tác</span>
+    <h2>Mô hình nguyên tử Co 3D</h2>
+    <p class="sub">Kéo để xoay góc nhìn, dùng con lăn hoặc nút để phóng to. Mô hình minh họa hạt nhân và các lớp electron theo mô hình Bohr đơn giản hóa.</p>
+    <div class="two">
+      <div class="canvas-wrap">
+        <canvas id="atomCanvas" aria-label="Mô hình nguyên tử coban có thể xoay bằng thao tác kéo"></canvas>
+        <div class="canvas-hint">Kéo chuột/ngón tay để xoay · cuộn để phóng to · sơ đồ không theo tỷ lệ thực.</div>
+      </div>
+      <div class="panel">
+        <h3>Thành phần của Co-59</h3>
+        <div class="three">
+          <div class="stat"><b>27</b><small>Proton (+)</small></div>
+          <div class="stat"><b>32</b><small>Neutron (0)</small></div>
+          <div class="stat"><b>27</b><small>Electron (−)</small></div>
+        </div>
+        <h3 style="margin-top:20px">Phân bố electron theo lớp</h3>
+        <p>Với nguyên tử coban trung hòa, cách phân bố electron theo lớp thường viết là <b>2 – 8 – 15 – 2</b>.</p>
+        <div class="fact">Cấu hình electron: [Ar] 3d⁷ 4s² (đầy đủ: 1s² 2s² 2p⁶ 3s² 3p⁶ 3d⁷ 4s²). Electron không thực sự chạy trên các vòng tròn cố định; mô hình này chỉ giúp hình dung cấu trúc cơ bản.</div>
+        <div class="controls"><button class="btn" id="zoomOut">− Thu nhỏ</button><button class="btn" id="zoomIn">＋ Phóng to</button><button class="btn" id="resetAtom">Đặt lại góc</button></div>
+        <div class="legend"><span><i class="dot" style="background:#ff7b75"></i>Proton</span><span><i class="dot" style="background:#9aaac0"></i>Neutron</span><span><i class="dot" style="background:#5de1e6"></i>Electron</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="thi-nghiem">
+    <span class="pill">04 · Quan sát thực tế</span>
+    <h2>Thí nghiệm: Khảo sát nam châm chứa coban</h2>
+    <p class="sub">Khảo sát lực hút từ của một nam châm samarium–coban (SmCo) được ghi rõ thành phần. Hoạt động này quan sát hợp kim chứa coban, không phải thí nghiệm với coban kim loại tinh khiết.</p>
+    <div class="two">
+      <div class="panel">
+        <h3>Chuẩn bị</h3>
+        <ul><li>Một nam châm samarium–coban (SmCo) thương mại có nhãn/thông tin vật liệu</li><li>Kẹp giấy bằng thép, lá nhôm, dây đồng và que gỗ</li><li>Giấy ghi kết quả và bút</li></ul>
+        <h3>Cách làm</h3>
+        <ol><li>Đặt từng vật lên bàn, cách nhau một khoảng.</li><li>Đưa nam châm SmCo đến gần từng vật, không đập hai nam châm vào nhau.</li><li>Ghi xem vật nào bị hút rõ rệt, vật nào không bị hút đáng kể.</li><li>Lặp lại 2–3 lần và so sánh kết quả. Kiểm tra nhãn của nam châm để xác nhận đó là loại có chứa coban.</li></ol>
+      </div>
+      <div class="panel">
+        <h3>Dự đoán kết quả</h3>
+        <div class="timeline">
+          <div class="beat"><time>Thép</time><div><b>Thường bị hút</b><br><span class="sub">Nhiều loại thép thông dụng có tính sắt từ.</span></div></div>
+          <div class="beat"><time>Đồng</time><div><b>Không bị hút đáng kể</b><br><span class="sub">Đồng không có tính sắt từ ở điều kiện thường.</span></div></div>
+          <div class="beat"><time>Nhôm</time><div><b>Không bị hút rõ rệt</b><br><span class="sub">Nhôm không bị nam châm hút như thép thông thường.</span></div></div>
+        </div>
+        <div class="safety"><b>An toàn:</b> chỉ dùng nam châm thương mại nguyên vẹn; nam châm mạnh có thể kẹp tay hoặc làm vỡ nếu va đập. Để xa trẻ nhỏ, thiết bị điện tử nhạy cảm và người có thiết bị y tế cấy ghép. Không tháo pin hay xử lý bột/hợp chất coban.</div>
+        <p class="fact" style="margin-top:14px">Giải thích: coban là kim loại có tính sắt từ và được dùng trong các hợp kim nam châm như samarium–coban. Thí nghiệm minh họa lực hút của nam châm SmCo; nó không chứng minh mọi vật chứa coban đều là nam châm.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="quiz">
+    <span class="pill">05 · Kiểm tra kiến thức</span>
+    <h2>Thử thách thông minh</h2>
+    <p class="sub">Chọn đáp án cho từng câu rồi bấm chấm điểm. Phản hồi sẽ giải thích vì sao đáp án đúng.</p>
+    <form id="quizForm">
+      <div class="quiz-q" data-answer="b" data-explain="Co có số hiệu nguyên tử 27; nguyên tử trung hòa có 27 proton và 27 electron.">
+        <p>1. Số hiệu nguyên tử của coban (Co) là bao nhiêu?</p>
+        <label class="option"><input type="radio" name="q1" value="a"> 26</label>
+        <label class="option"><input type="radio" name="q1" value="b"> 27</label>
+        <label class="option"><input type="radio" name="q1" value="c"> 29</label>
+      </div>
+      <div class="quiz-q" data-answer="a" data-explain="Coban là thành phần cấu trúc thiết yếu của vitamin B12; không nên tự bổ sung coban kim loại.">
+        <p>2. Chất dinh dưỡng nào có chứa coban trong cấu trúc?</p>
+        <label class="option"><input type="radio" name="q2" value="a"> Vitamin B12</label>
+        <label class="option"><input type="radio" name="q2" value="b"> Vitamin C</label>
+        <label class="option"><input type="radio" name="q2" value="c"> Glucose</label>
+      </div>
+      <div class="quiz-q" data-answer="c" data-explain="Coban và các hợp kim chứa coban có thể được dùng để chế tạo nam châm và hợp kim chịu nhiệt.">
+        <p>3. Ứng dụng công nghiệp nào phù hợp với coban?</p>
+        <label class="option"><input type="radio" name="q3" value="a"> Làm nhiên liệu khí thông thường</label>
+        <label class="option"><input type="radio" name="q3" value="b"> Thay thế hoàn toàn mọi loại nhựa</label>
+        <label class="option"><input type="radio" name="q3" value="c"> Hợp kim chịu nhiệt và nam châm</label>
+      </div>
+      <div class="quiz-q" data-answer="b" data-explain="Co-60 là đồng vị phóng xạ được sử dụng trong những ứng dụng xạ trị và chiếu xạ công nghiệp có kiểm soát.">
+        <p>4. Điều nào đúng về đồng vị Co-60?</p>
+        <label class="option"><input type="radio" name="q4" value="a"> Là đồng vị bền phổ biến nhất của coban</label>
+        <label class="option"><input type="radio" name="q4" value="b"> Là đồng vị phóng xạ dùng trong một số ứng dụng y tế, công nghiệp</label>
+        <label class="option"><input type="radio" name="q4" value="c"> Là vitamin trong thực phẩm</label>
+      </div>
+      <div class="controls"><button type="submit" class="btn primary">Chấm điểm</button><button type="button" class="btn" id="resetQuiz">Làm lại</button></div>
+      <div id="quizResult" class="feedback" aria-live="polite"></div>
+    </form>
+  </section>
+</main>
+<footer><div class="wrap"><b>Ghi nhớ:</b> Co là nguyên tố số 27, thuộc nhóm 9, chu kỳ 4. Co-59 là đồng vị bền tự nhiên phổ biến; Co-60 là đồng vị phóng xạ chỉ được sử dụng trong điều kiện kiểm soát chuyên môn. Mô hình nguyên tử và hoạt động học tập mang tính giáo dục.<br><br><b>Nguồn tham khảo:</b> <a href="https://periodic-table.rsc.org/element/27/cobalt-Cobalt" target="_blank" rel="noopener">Royal Society of Chemistry – Cobalt</a> · <a href="https://www.cdc.gov/radiation-emergencies/hcp/isotopes/cobalt-60.html" target="_blank" rel="noopener">CDC – Cobalt-60</a> · <a href="https://www.ncbi.nlm.nih.gov/books/NBK609992/" target="_blank" rel="noopener">ATSDR/NCBI – Toxicological Profile of Cobalt</a>.<br><br>Trang học tập HTML độc lập · Có thể mở trực tiếp bằng trình duyệt.</div></footer>
+<script>
+(() => {
+  // Video dạng trình chiếu 75 giây, mỗi cảnh có thời lượng cố định.
+  const scenes = [
+    {title:"Xin chào, đây là nguyên tố Coban!", text:"Ký hiệu Co, số hiệu nguyên tử 27. Coban thuộc nhóm kim loại chuyển tiếp ở chu kỳ 4.", caption:"Hãy cùng khám phá kim loại màu xanh bạc có vai trò trong công nghệ và sinh học.", duration:12},
+    {title:"Bên trong nguyên tử", text:"Coban có 27 proton. Đồng vị Co-59 có 32 neutron; nguyên tử coban trung hòa có 27 electron.", caption:"Số proton quyết định nguyên tố là coban; số neutron có thể khác nhau giữa các đồng vị.", duration:13},
+    {title:"Một kim loại đặc biệt", text:"Coban là kim loại cứng, màu xanh bạc và có tính sắt từ. Nó có thể dùng để chế tạo vật liệu nam châm và hợp kim chuyên dụng.", caption:"Tính từ của coban khiến nó hữu ích trong nam châm; nhiều hợp kim coban còn giữ độ bền ở nhiệt độ cao.", duration:13},
+    {title:"Nền tảng của công nghiệp", text:"Coban được dùng trong hợp kim chịu nhiệt, một số vật liệu pin sạc và nam châm samarium–coban; ứng dụng tùy thuộc hợp chất và thiết kế.", caption:"Hợp kim giúp điều chỉnh độ bền, khả năng chịu nhiệt và tính từ theo yêu cầu của thiết bị.", duration:13},
+    {title:"Coban trong cơ thể", text:"Coban là thành phần của vitamin B12, cần thiết cho tạo máu và hoạt động thần kinh bình thường. Không tự dùng coban kim loại làm chất bổ sung.", caption:"Co-60 phóng xạ được sử dụng trong một số ứng dụng xạ trị; nguồn phóng xạ phải được quản lý nghiêm ngặt bởi chuyên gia.", duration:13},
+    {title:"Co quanh ta", text:"Từ pin sạc đến nam châm và vitamin B12, coban có nhiều vai trò quan trọng trong đời sống hiện đại.", caption:"Bạn đã sẵn sàng thử thách kiến thức về Co chưa? Hãy làm bài trắc nghiệm phía dưới!", duration:11}
+  ];
+  let sceneIndex = 0, playing = false, elapsed = 0, lastTime = 0, raf = null;
+  const title = document.getElementById('sceneTitle'), text = document.getElementById('sceneText');
+  const time = document.getElementById('sceneTime'), caption = document.getElementById('caption');
+  const bar = document.getElementById('progressBar'), playBtn = document.getElementById('playBtn');
+  const totalDuration = scenes.reduce((sum,s)=>sum+s.duration,0);
+  function totalElapsed(){ return scenes.slice(0,sceneIndex).reduce((s,x)=>s+x.duration,0)+elapsed; }
+  function renderScene(){
+    const s=scenes[sceneIndex]; title.textContent=s.title; text.textContent=s.text; caption.textContent='Lời dẫn: “'+s.caption+'”';
+    time.textContent=`Cảnh ${sceneIndex+1} / ${scenes.length} · ${String(Math.floor(totalElapsed()/60)).padStart(2,'0')}:${String(Math.floor(totalElapsed()%60)).padStart(2,'0')}`;
+    bar.style.width=(totalElapsed()/totalDuration*100)+'%'; playBtn.textContent=playing?'Ⅱ':'▶';
+  }
+  function tick(now){
+    if(!playing)return;
+    if(!lastTime)lastTime=now;
+    const dt=(now-lastTime)/1000; lastTime=now; elapsed+=dt;
+    if(elapsed>=scenes[sceneIndex].duration){
+      elapsed=0;
+      if(sceneIndex<scenes.length-1)sceneIndex++;
+      else {playing=false;elapsed=scenes[sceneIndex].duration;lastTime=0;renderScene();return;}
+    }
+    renderScene(); raf=requestAnimationFrame(tick);
+  }
+  function togglePlay(){playing=!playing;lastTime=0;renderScene();if(playing)raf=requestAnimationFrame(tick);else if(raf)cancelAnimationFrame(raf);}
+  playBtn.addEventListener('click',togglePlay);
+  document.getElementById('nextBtn').addEventListener('click',()=>{if(raf)cancelAnimationFrame(raf);playing=false;sceneIndex=(sceneIndex+1)%scenes.length;elapsed=0;lastTime=0;renderScene();});
+  document.getElementById('restartBtn').addEventListener('click',()=>{if(raf)cancelAnimationFrame(raf);playing=false;sceneIndex=0;elapsed=0;lastTime=0;renderScene();});
+  renderScene();
+
+  // Mô hình nguyên tử canvas: phối cảnh 3D đơn giản, tương tác kéo và zoom.
+  const canvas=document.getElementById('atomCanvas'), ctx=canvas.getContext('2d');
+  let rotX=-0.35, rotY=0.55, zoom=1, dragging=false, px=0, py=0;
+  const electrons=[2,8,15,2];
+  function resizeCanvas(){
+    const rect=canvas.getBoundingClientRect(), dpr=Math.min(window.devicePixelRatio||1,2);
+    canvas.width=Math.max(1,Math.floor(rect.width*dpr));canvas.height=Math.max(1,Math.floor(340*dpr));
+    ctx.setTransform(dpr,0,0,dpr,0,0);drawAtom();
+  }
+  function project(x,y,z,cx,cy,scale){
+    const cy1=Math.cos(rotY),sy=Math.sin(rotY),cx1=Math.cos(rotX),sx=Math.sin(rotX);
+    const x1=x*cy1+z*sy,z1=-x*sy+z*cy1,y1=y*cx1-z1*sx,z2=y*sx+z1*cx1;
+    const perspective=500/(500+z2);
+    return {x:cx+x1*scale*perspective,y:cy+y1*scale*perspective,z:z2};
+  }
+  function drawAtom(){
+    if(!ctx)return;
+    const w=canvas.clientWidth||500,h=340;ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#08101d';ctx.fillRect(0,0,w,h);
+    const cx=w/2,cy=h/2,base=Math.min(w*.29,112)*zoom;
+    // quỹ đạo electron
+    for(let shell=0;shell<4;shell++){
+      const r=base*(.43+shell*.23);
+      ctx.beginPath();
+      for(let i=0;i<=180;i++){
+        const a=i/180*Math.PI*2;
+        const p=project(Math.cos(a)*r,Math.sin(a)*r*.72,0,cx,cy,1);
+        if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y);
+      }
+      ctx.strokeStyle=['#35536b','#3a5a70','#42627a','#4a6a80'][shell];ctx.lineWidth=1.2;ctx.stroke();
+    }
+    // hạt nhân: cụm hạt minh họa, không phải số lượng theo tỷ lệ
+    const particles=[];
+    for(let i=0;i<59;i++){
+      const a=i*2.3999632297, rr=base*.12*Math.sqrt(i/56);
+      particles.push({x:Math.cos(a)*rr,y:Math.sin(a)*rr,z:Math.sin(i*1.7)*base*.09,type:i<27?'p':'n'});
+    }
+    particles.sort((a,b)=>a.z-b.z).forEach(pt=>{
+      const p=project(pt.x,pt.y,pt.z,cx,cy,1);
+      ctx.beginPath();ctx.arc(p.x,p.y,Math.max(2.5,base*.035),0,Math.PI*2);
+      ctx.fillStyle=pt.type==='p'?'#ff7b75':'#9aaac0';ctx.fill();
+    });
+    // electron theo lớp 2, 8, 14, 2; các góc được phân bố để dễ nhìn
+    electrons.forEach((count,shell)=>{
+      const r=base*(.43+shell*.23);
+      for(let i=0;i<count;i++){
+        const a=(i/count)*Math.PI*2+shell*.68;
+        const tilt=(shell%2===0)?0.18:-0.45;
+        const p=project(Math.cos(a)*r,Math.sin(a)*r*.72,Math.sin(a*2+shell)*r*tilt,cx,cy,1);
+        ctx.beginPath();ctx.arc(p.x,p.y,4.3,0,Math.PI*2);ctx.fillStyle='#5de1e6';ctx.shadowColor='#5de1e6';ctx.shadowBlur=8;ctx.fill();ctx.shadowBlur=0;
+      }
+    });
+    ctx.fillStyle='#a8bbd2';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText('Hạt nhân Co',cx,cy+base*.18+20);
+  }
+  canvas.addEventListener('pointerdown',e=>{dragging=true;px=e.clientX;py=e.clientY;canvas.setPointerCapture(e.pointerId);});
+  canvas.addEventListener('pointermove',e=>{if(!dragging)return;rotY+=(e.clientX-px)*.012;rotX+=(e.clientY-py)*.012;px=e.clientX;py=e.clientY;drawAtom();});
+  canvas.addEventListener('pointerup',()=>dragging=false);canvas.addEventListener('pointercancel',()=>dragging=false);
+  canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.65,Math.min(1.7,zoom+(e.deltaY<0?.08:-.08)));drawAtom();},{passive:false});
+  document.getElementById('zoomIn').addEventListener('click',()=>{zoom=Math.min(1.7,zoom+.12);drawAtom();});
+  document.getElementById('zoomOut').addEventListener('click',()=>{zoom=Math.max(.65,zoom-.12);drawAtom();});
+  document.getElementById('resetAtom').addEventListener('click',()=>{rotX=-.35;rotY=.55;zoom=1;drawAtom();});
+  window.addEventListener('resize',resizeCanvas);resizeCanvas();
+
+  // Trắc nghiệm và phản hồi từng câu.
+  const form=document.getElementById('quizForm'), result=document.getElementById('quizResult');
+  form.addEventListener('submit',e=>{
+    e.preventDefault();let score=0,answered=0;
+    form.querySelectorAll('.quiz-q').forEach((q,i)=>{
+      const chosen=q.querySelector('input:checked');let fb=q.querySelector('.feedback');
+      if(!fb){fb=document.createElement('div');fb.className='feedback';q.appendChild(fb);}
+      if(chosen){answered++;if(chosen.value===q.dataset.answer){score++;fb.className='feedback good';fb.textContent='✓ Chính xác! '+q.dataset.explain;}
+      else{fb.className='feedback bad';fb.textContent='Chưa đúng. '+q.dataset.explain;}}
+      else{fb.className='feedback bad';fb.textContent='Bạn chưa chọn đáp án. '+q.dataset.explain;}
+    });
+    result.className='feedback '+(score>=3?'good':'bad');
+    result.textContent=`Kết quả: ${score}/4 câu đúng · Đã trả lời ${answered}/4 câu. ${score===4?'Xuất sắc! Bạn đã nắm vững kiến thức cơ bản về Co.':score>=3?'Rất tốt! Hãy xem lại phần giải thích để củng cố.':'Hãy đọc lại nội dung rồi thử lại nhé.'}`;
+  });
+  document.getElementById('resetQuiz').addEventListener('click',()=>{
+    form.reset();form.querySelectorAll('.quiz-q .feedback').forEach(x=>x.remove());result.textContent='';result.className='feedback';
+  });
+})();
+</script>
+</body>
+</html>
